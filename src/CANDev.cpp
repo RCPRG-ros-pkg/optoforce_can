@@ -70,13 +70,7 @@ CANDev::CANDev(std::string dev_name, const std::vector<CANDev::FilterElement > &
 
     strcpy(ifr.ifr_name, dev_name.c_str());
     rt_dev_ioctl(dev, SIOCGIFINDEX, &ifr);
-/*
-#if !defined(HAVE_RTNET)
-    int dev_flags = fcntl(dev, F_GETFL);
-    dev_flags |= O_NONBLOCK;
-    fcntl(dev, F_SETFL, dev_flags);
-#endif
-//*/
+
     addr.can_family  = AF_CAN;
     addr.can_ifindex = ifr.ifr_ifindex; 
 
@@ -175,7 +169,6 @@ uint32_t CANDev::readMultiFrameData(uint32_t can_id, uint8_t *data) {
 
     if (multi_buf_size <= 0) {
         while(1) {
-// flag: MSG_DONTWAIT ?
             size_t ret = rt_dev_recv(dev, reinterpret_cast<void*>(&frame), sizeof(frame), 0);
             if(ret != sizeof(frame)) {
                 return 0;
