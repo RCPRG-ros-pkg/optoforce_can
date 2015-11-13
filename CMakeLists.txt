@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(optoforce_can)
 
 find_package(catkin REQUIRED COMPONENTS
-    roscpp cmake_modules eigen_conversions geometry_msgs
+    roscpp cmake_modules eigen_conversions geometry_msgs can_driver
   )
 
 if(${OROCOS_TARGET} STREQUAL "xenomai" )
@@ -22,7 +22,7 @@ catkin_package()
 
 include_directories(${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS})
 
-add_executable(optoforce_can_test src/test.cpp src/CANDev.cpp src/OptoforceSensor.cpp)
+add_executable(optoforce_can_test src/test.cpp src/OptoforceSensor.cpp)
 
 if(${OROCOS_TARGET} STREQUAL "xenomai" )
   target_link_libraries(optoforce_can_test ${catkin_LIBRARIES} ${Xenomai_RTDM_LIBRARIES})

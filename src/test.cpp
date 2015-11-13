@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
     ros::init(argc, argv, "optoforce_can_test");
     ros::NodeHandle nh;
 
-    OptoforceSensor os("can0");
+    OptoforceSensor os("can0", OptoforceSensor::SensorType4Ch);
 
     if (os.isDevOpened()) {
         std::cout << "device is opened" << std::endl;
@@ -46,11 +46,12 @@ int main(int argc, char** argv) {
         std::cout << "could not open the device" << std::endl;
     }
 
+    os.setConfiguration(OptoforceSensor::Speed100, OptoforceSensor::Filter50, OptoforceSensor::ZeroSet);
+
     ros::Publisher pub1 = nh.advertise<geometry_msgs::Vector3Stamped>("/optoforce/force1", 100);
     ros::Publisher pub2 = nh.advertise<geometry_msgs::Vector3Stamped>("/optoforce/force2", 100);
     ros::Publisher pub3 = nh.advertise<geometry_msgs::Vector3Stamped>("/optoforce/force3", 100);
 
-    ros::Rate loop_rate(200);
     while (ros::ok()) {
         Eigen::Vector3d f1, f2, f3;
         if (!os.read(f1, f2, f3)) {
@@ -75,7 +76,6 @@ int main(int argc, char** argv) {
         pub3.publish(msg);
 
         ros::spinOnce();
-        loop_rate.sleep();
     }
 
     return 0;

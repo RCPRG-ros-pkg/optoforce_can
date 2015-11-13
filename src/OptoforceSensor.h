@@ -28,18 +28,29 @@
 #ifndef _OPTOFORCE_SENSOR_H_
 #define _OPTOFORCE_SENSOR_H_
 
-#include <inttypes.h>
-#include "CANDev.h"
+#include "can_driver/CANDev.h"
 #include <string>
 #include "Eigen/Dense"
 
 class OptoforceSensor {
 public:
-	OptoforceSensor(std::string dev_name = "can0");
-	~OptoforceSensor();
+    enum SensorType { SensorType1Ch = 0, SensorType4Ch = 1 };
+
+    // configuration
+    enum Speed { SpeedStop = 0, Speed1000 = 1, Speed333 = 3, Speed100 = 10, Speed30 = 33, Speed10 = 100 };
+    enum Filter { FilterDisabled = 0, Filter500 = 1, Filter150 = 2, Filter50 = 3, Filter15 = 4, Filter5 = 5, Filter1_5 = 6 };
+    enum Zero { ZeroRestore = 0, ZeroSet = 255 };
+
+	OptoforceSensor(const std::string &dev_name, SensorType type);
+	virtual ~OptoforceSensor();
     bool read(Eigen::Vector3d &f1, Eigen::Vector3d &f2, Eigen::Vector3d &f3);
+    bool read(Eigen::Vector3d &f);
 	bool isDevOpened();
+    void setConfiguration(Speed s, Filter f, Zero z);
 protected:
+
+    OptoforceSensor(const OptoforceSensor &os);
+    OptoforceSensor& operator=(const OptoforceSensor &os);
 
     struct __attribute__((packed)) SensorPacket {
         uint8_t header_[4];
@@ -60,7 +71,20 @@ protected:
         uint16_t checksum_;
     };
 
-	CANDev *pdev;
+    struct __attribute__((packed)) SensorPacketSmall {
+        uint8_t header_[4];
+        uint16_t sample_counter_;
+        uint16_t status_;
+        int16_t fx_;
+        int16_t fy_;
+        int16_t fz_;
+        uint16_t checksum_;
+    };
+
+    SensorType type_;
+	CANDev *pdev_;
+    uint16_t can_rx_id_;
+    uint16_t can_tx_id_;
 };
 
 #endif  // OPTOFORCE_SENSOR
