@@ -41,7 +41,7 @@ OptoforceSensor::OptoforceSensor(const std::string &dev_name, OptoforceSensor::S
     // mask:   0x07FE    111 1111 1110
     std::vector<CANDev::FilterElement > filters;
     filters.push_back( CANDev::FilterElement(0x0100, 0x07FE) );
-    pdev_ = new CANDev(dev_name, filters);
+    pdev_ = new CANDev(dev_name, "OptoforceSensor", filters);
 
     type_ = type;
     if (type_ == SensorType1Ch) {
