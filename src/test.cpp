@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <geometry_msgs/Vector3Stamped.h>
 
-#include "OptoforceSensor.h"
+#include "optoforce_can/OptoforceSensor.h"
 
 int main(int argc, char** argv) {
     ros::init(argc, argv, "optoforce_can_test");
@@ -48,9 +48,9 @@ int main(int argc, char** argv) {
 
     os.setConfiguration(OptoforceSensor::Speed100, OptoforceSensor::Filter50, OptoforceSensor::ZeroSet);
 
-    ros::Publisher pub1 = nh.advertise<geometry_msgs::Vector3Stamped>("/optoforce/force1", 100);
-    ros::Publisher pub2 = nh.advertise<geometry_msgs::Vector3Stamped>("/optoforce/force2", 100);
-    ros::Publisher pub3 = nh.advertise<geometry_msgs::Vector3Stamped>("/optoforce/force3", 100);
+    ros::Publisher pub1 = nh.advertise<geometry_msgs::Vector3Stamped>("/optoforce/force0", 100);
+    ros::Publisher pub2 = nh.advertise<geometry_msgs::Vector3Stamped>("/optoforce/force1", 100);
+    ros::Publisher pub3 = nh.advertise<geometry_msgs::Vector3Stamped>("/optoforce/force2", 100);
 
     while (ros::ok()) {
         Eigen::Vector3d f1, f2, f3;

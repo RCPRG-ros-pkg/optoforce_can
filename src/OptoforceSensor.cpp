@@ -25,7 +25,7 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include "OptoforceSensor.h"
+#include "optoforce_can/OptoforceSensor.h"
 
 #include <string>
 #include <cstring>
