@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
     ros::init(argc, argv, "optoforce_can_test");
     ros::NodeHandle nh;
 
-    OptoforceSensor os("can0", OptoforceSensor::SensorType4Ch);
+    OptoforceSensor os("can0", OptoforceSensor::SensorType4Ch, 0x0102, 0x0103);
 
     if (os.isDevOpened()) {
         std::cout << "device is opened" << std::endl;

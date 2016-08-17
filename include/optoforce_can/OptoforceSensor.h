@@ -41,7 +41,7 @@ public:
     enum Filter { FilterDisabled = 0, Filter500 = 1, Filter150 = 2, Filter50 = 3, Filter15 = 4, Filter5 = 5, Filter1_5 = 6 };
     enum Zero { ZeroRestore = 0, ZeroSet = 255 };
 
-	OptoforceSensor(const std::string &dev_name, SensorType type);
+	OptoforceSensor(const std::string &dev_name, SensorType type, uint32_t can_rx_id, uint32_t can_tx_id);
 	virtual ~OptoforceSensor();
     bool read(Eigen::Vector3d &f1, Eigen::Vector3d &f2, Eigen::Vector3d &f3);
     bool read(Eigen::Vector3d &f);
@@ -83,8 +83,8 @@ protected:
 
     SensorType type_;
 	CANDev *pdev_;
-    uint16_t can_rx_id_;
-    uint16_t can_tx_id_;
+    uint32_t can_rx_id_;
+    uint32_t can_tx_id_;
 };
 
 #endif  // OPTOFORCE_SENSOR

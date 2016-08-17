@@ -31,16 +31,16 @@
 #include <cstring>
 #include <iostream>
 
-OptoforceSensor::OptoforceSensor(const std::string &dev_name, OptoforceSensor::SensorType type) :
-    can_rx_id_(0x0100),
-    can_tx_id_(0x0101)
+OptoforceSensor::OptoforceSensor(const std::string &dev_name, OptoforceSensor::SensorType type, uint32_t can_rx_id, uint32_t can_tx_id):
+    can_rx_id_(can_rx_id),
+    can_tx_id_(can_tx_id)
 {
     // read:   0x0100    001 0000 0000
     // write:  0x0101    001 0000 0001
     // filter: 0x0100    001 0000 0000
     // mask:   0x07FE    111 1111 1110
     std::vector<CANDev::FilterElement > filters;
-    filters.push_back( CANDev::FilterElement(0x0100, 0x07FE) );
+    filters.push_back( CANDev::FilterElement(can_rx_id_, 0x07FE) );
     pdev_ = new CANDev(dev_name, "OptoforceSensor", filters);
 
     type_ = type;
