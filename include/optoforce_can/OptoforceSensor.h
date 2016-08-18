@@ -25,12 +25,12 @@
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _OPTOFORCE_SENSOR_H_
-#define _OPTOFORCE_SENSOR_H_
+#ifndef OPTOFORCESENSOR_H_
+#define OPTOFORCESENSOR_H_
 
 #include "can_driver/CANDev.h"
-#include <string>
 #include "Eigen/Dense"
+#include <string>
 
 class OptoforceSensor {
  public:
@@ -65,12 +65,12 @@ class OptoforceSensor {
   OptoforceSensor(const std::string &dev_name, SensorType type,
                   uint32_t can_rx_id, uint32_t can_tx_id);
   virtual ~OptoforceSensor();
-  bool read(Eigen::Vector3d &f1, Eigen::Vector3d &f2, Eigen::Vector3d &f3);
-  bool read(Eigen::Vector3d &f);
+  bool read(Eigen::Vector3d *f1, Eigen::Vector3d *f2, Eigen::Vector3d *f3);
+  bool read(Eigen::Vector3d *f);
   bool isDevOpened();
   void setConfiguration(Speed s, Filter f, Zero z);
- protected:
 
+ protected:
   OptoforceSensor(const OptoforceSensor &os);
   OptoforceSensor& operator=(const OptoforceSensor &os);
 
@@ -109,5 +109,5 @@ class OptoforceSensor {
   uint32_t can_tx_id_;
 };
 
-#endif  // OPTOFORCE_SENSOR
+#endif  // OPTOFORCESENSOR_H_
 

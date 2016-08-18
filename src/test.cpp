@@ -4,14 +4,14 @@
  
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
-     * Redistributions of source code must retain the above copyright
-       notice, this list of conditions and the following disclaimer.
-     * Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-     * Neither the name of the Warsaw University of Technology nor the
-       names of its contributors may be used to endorse or promote products
-       derived from this software without specific prior written permission.
+ * Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in the
+ documentation and/or other materials provided with the distribution.
+ * Neither the name of the Warsaw University of Technology nor the
+ names of its contributors may be used to endorse or promote products
+ derived from this software without specific prior written permission.
  
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
@@ -23,60 +23,63 @@
  ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 
 #include <ros/ros.h>
-#include <string>
 #include <math.h>
 #include <stdlib.h>
 #include <geometry_msgs/Vector3Stamped.h>
+#include <string>
 
 #include "optoforce_can/OptoforceSensor.h"
 
 int main(int argc, char** argv) {
-    ros::init(argc, argv, "optoforce_can_test");
-    ros::NodeHandle nh;
+  ros::init(argc, argv, "optoforce_can_test");
+  ros::NodeHandle nh;
 
-    OptoforceSensor os("can0", OptoforceSensor::SensorType4Ch, 0x0102, 0x0103);
+  OptoforceSensor os("can0", OptoforceSensor::SensorType4Ch, 0x0102, 0x0103);
 
-    if (os.isDevOpened()) {
-        std::cout << "device is opened" << std::endl;
-    }
-    else {
-        std::cout << "could not open the device" << std::endl;
-    }
+  if (os.isDevOpened()) {
+    std::cout << "device is opened" << std::endl;
+  } else {
+    std::cout << "could not open the device" << std::endl;
+  }
 
-    os.setConfiguration(OptoforceSensor::Speed100, OptoforceSensor::Filter50, OptoforceSensor::ZeroSet);
+  os.setConfiguration(OptoforceSensor::Speed100, OptoforceSensor::Filter50,
+                      OptoforceSensor::ZeroSet);
 
-    ros::Publisher pub1 = nh.advertise<geometry_msgs::Vector3Stamped>("/optoforce/force0", 100);
-    ros::Publisher pub2 = nh.advertise<geometry_msgs::Vector3Stamped>("/optoforce/force1", 100);
-    ros::Publisher pub3 = nh.advertise<geometry_msgs::Vector3Stamped>("/optoforce/force2", 100);
+  ros::Publisher pub1 = nh.advertise<geometry_msgs::Vector3Stamped>(
+      "/optoforce/force0", 100);
+  ros::Publisher pub2 = nh.advertise<geometry_msgs::Vector3Stamped>(
+      "/optoforce/force1", 100);
+  ros::Publisher pub3 = nh.advertise<geometry_msgs::Vector3Stamped>(
+      "/optoforce/force2", 100);
 
-    while (ros::ok()) {
-        Eigen::Vector3d f1, f2, f3;
-        if (!os.read(f1, f2, f3)) {
-            std::cout << "could not read the sensor data" << std::endl;
-        }
-
-        geometry_msgs::Vector3Stamped msg;
-        msg.header.stamp = ros::Time::now();
-        msg.vector.x = f1(0);
-        msg.vector.y = f1(1);
-        msg.vector.z = f1(2);
-        pub1.publish(msg);
-
-        msg.vector.x = f2(0);
-        msg.vector.y = f2(1);
-        msg.vector.z = f2(2);
-        pub2.publish(msg);
-
-        msg.vector.x = f3(0);
-        msg.vector.y = f3(1);
-        msg.vector.z = f3(2);
-        pub3.publish(msg);
-
-        ros::spinOnce();
+  while (ros::ok()) {
+    Eigen::Vector3d f1, f2, f3;
+    if (!os.read(&f1, &f2, &f3)) {
+      std::cout << "could not read the sensor data" << std::endl;
     }
 
-    return 0;
+    geometry_msgs::Vector3Stamped msg;
+    msg.header.stamp = ros::Time::now();
+    msg.vector.x = f1(0);
+    msg.vector.y = f1(1);
+    msg.vector.z = f1(2);
+    pub1.publish(msg);
+
+    msg.vector.x = f2(0);
+    msg.vector.y = f2(1);
+    msg.vector.z = f2(2);
+    pub2.publish(msg);
+
+    msg.vector.x = f3(0);
+    msg.vector.y = f3(1);
+    msg.vector.z = f3(2);
+    pub3.publish(msg);
+
+    ros::spinOnce();
+  }
+
+  return 0;
 }

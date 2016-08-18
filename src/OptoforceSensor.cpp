@@ -29,7 +29,8 @@
 
 #include <string>
 #include <cstring>
-#include <iostream>
+#include <iostream>  // NOLINT
+#include <vector>
 
 OptoforceSensor::OptoforceSensor(const std::string &dev_name,
                                  OptoforceSensor::SensorType type,
@@ -51,7 +52,7 @@ OptoforceSensor::OptoforceSensor(const std::string &dev_name,
     pdev_->setMultiFrameReceiver(34);
   } else {
     std::cout << "ERROR: OptoforceSensor::OptoforceSensor: wrong sensor type: "
-        << static_cast<int>(type_) << std::endl;
+              << static_cast<int>(type_) << std::endl;
   }
 }
 
@@ -80,8 +81,8 @@ void OptoforceSensor::setConfiguration(OptoforceSensor::Speed s,
   pdev_->send(can_tx_id_, 8, &data[8]);
 }
 
-bool OptoforceSensor::read(Eigen::Vector3d &f1, Eigen::Vector3d &f2,
-                           Eigen::Vector3d &f3) {
+bool OptoforceSensor::read(Eigen::Vector3d *f1, Eigen::Vector3d *f2,
+                           Eigen::Vector3d *f3) {
   if (type_ != SensorType4Ch) {
     return false;
   }
@@ -92,7 +93,7 @@ bool OptoforceSensor::read(Eigen::Vector3d &f1, Eigen::Vector3d &f2,
   int bytes = pdev_->readMultiFrameData(can_rx_id_, &data[0], header);
 
   if (bytes != 34) {
-    //std::cout << "ERROR: OptoforceSensor::read: bytes: " << bytes << std::endl;
+    // std::cout << "ERROR: OptoforceSensor::read: bytes: " << bytes << std::endl;
     return false;
   }
 
@@ -109,26 +110,26 @@ bool OptoforceSensor::read(Eigen::Vector3d &f1, Eigen::Vector3d &f2,
   }
 
   if (checksum != sp.checksum_) {
-    //std::cout << "ERROR: OptoforceSensor::read: checksum: " << checksum << " " << sp.checksum_ << std::endl;
+    // std::cout << "ERROR: OptoforceSensor::read: checksum: " << checksum << " " << sp.checksum_ << std::endl;
     return false;
   }
 
-  f1(0) = static_cast<double>(sp.fx1_);
-  f1(1) = static_cast<double>(sp.fy1_);
-  f1(2) = static_cast<double>(sp.fz1_);
+  (*f1)(0) = static_cast<double>(sp.fx1_);
+  (*f1)(1) = static_cast<double>(sp.fy1_);
+  (*f1)(2) = static_cast<double>(sp.fz1_);
 
-  f2(0) = static_cast<double>(sp.fx2_);
-  f2(1) = static_cast<double>(sp.fy2_);
-  f2(2) = static_cast<double>(sp.fz2_);
+  (*f2)(0) = static_cast<double>(sp.fx2_);
+  (*f2)(1) = static_cast<double>(sp.fy2_);
+  (*f2)(2) = static_cast<double>(sp.fz2_);
 
-  f3(0) = static_cast<double>(sp.fx3_);
-  f3(1) = static_cast<double>(sp.fy3_);
-  f3(2) = static_cast<double>(sp.fz3_);
+  (*f3)(0) = static_cast<double>(sp.fx3_);
+  (*f3)(1) = static_cast<double>(sp.fy3_);
+  (*f3)(2) = static_cast<double>(sp.fz3_);
 
   return true;
 }
 
-bool OptoforceSensor::read(Eigen::Vector3d &f) {
+bool OptoforceSensor::read(Eigen::Vector3d *f) {
   if (type_ != SensorType1Ch) {
     return false;
   }
@@ -139,7 +140,7 @@ bool OptoforceSensor::read(Eigen::Vector3d &f) {
   int bytes = pdev_->readMultiFrameData(can_rx_id_, &data[0], header);
 
   if (bytes != 16) {
-    //std::cout << "ERROR: OptoforceSensor::read: bytes: " << bytes << std::endl;
+    // std::cout << "ERROR: OptoforceSensor::read: bytes: " << bytes << std::endl;
     return false;
   }
 
@@ -156,13 +157,13 @@ bool OptoforceSensor::read(Eigen::Vector3d &f) {
   }
 
   if (checksum != sp.checksum_) {
-    //std::cout << "ERROR: OptoforceSensor::read: checksum: " << checksum << " " << sp.checksum_ << std::endl;
+    // std::cout << "ERROR: OptoforceSensor::read: checksum: " << checksum << " " << sp.checksum_ << std::endl;
     return false;
   }
 
-  f(0) = static_cast<double>(sp.fx_);
-  f(1) = static_cast<double>(sp.fy_);
-  f(2) = static_cast<double>(sp.fz_);
+  (*f)(0) = static_cast<double>(sp.fx_);
+  (*f)(1) = static_cast<double>(sp.fy_);
+  (*f)(2) = static_cast<double>(sp.fz_);
 
   return true;
 }
